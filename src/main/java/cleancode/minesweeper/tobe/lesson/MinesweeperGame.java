@@ -16,31 +16,27 @@ public class MinesweeperGame {
         initializeGame();
         while (true) {
             showBoard();
-            if (gameStatus == 1) { // 게임에서 승리한 경우
+            if (doesUserWinTheGame()) {
                 System.out.println("지뢰를 모두 찾았습니다. GAME CLEAR!");
                 break;
             }
-            if (gameStatus == -1) { // 게임에서 패배한 경우
+            if (doesUserLoseTheGame()) {
                 System.out.println("지뢰를 밟았습니다. GAME OVER!");
                 break;
             }
-            System.out.println("선택할 좌표를 입력하세요. (예: a1)");
-            String cellInput = scanner.nextLine();
-            System.out.println("선택한 셀에 대한 행위를 선택하세요. (1: 오픈, 2: 깃발 꽂기)");
-            String userActionInput = scanner.nextLine();
-            char cellInputCol = cellInput.charAt(0);
-            char cellInputRow = cellInput.charAt(1);
-            int selectedColIndex = convertColFrom(cellInputCol);
-            int selectedRowIndex = convertRowFrom(cellInputRow);
-            if (userActionInput.equals("2")) { // 깃발을 꽂는 경우
+            String cellInput = getCellInputFromUser(scanner);
+            String userActionInput = getUserActionInputFromUser(scanner);
+            int selectedColIndex = getSelectedColIndex(cellInput);
+            int selectedRowIndex = getSelectedRowIndex(cellInput);
+            if (doesUserChooseToPlantFlag(userActionInput)) {
                 board[selectedRowIndex][selectedColIndex] = "⚑";
                 checkIfGameIsOver();
-            } else if (userActionInput.equals("1")) { // open하는 경우
-                if (landMines[selectedRowIndex][selectedColIndex]) { // 지뢰가 있는 칸인 경우
+            } else if (doesUserChooseToOpenCell(userActionInput)) {
+                if (isLandMineCell(selectedRowIndex, selectedColIndex)) {
                     board[selectedRowIndex][selectedColIndex] = "☼";
-                    gameStatus = -1;
+                    changGameStatusToLose();
                     continue;
-                } else { // 지뢰가 있는 칸이 아닌 경우
+                } else {
                     open(selectedRowIndex, selectedColIndex);
                 }
                 checkIfGameIsOver();
@@ -50,12 +46,71 @@ public class MinesweeperGame {
         }
     }
 
+    // 게임 상태를 패배로 변경한다.
+    private static void changGameStatusToLose() {
+        gameStatus = -1;
+    }
+
+    // 해당 좌표에 지뢰가 있는지를 반환한다.
+    private static boolean isLandMineCell(int selectedRowIndex, int selectedColIndex) {
+        return landMines[selectedRowIndex][selectedColIndex];
+    }
+
+    // 사용자가 open하기를 선택했는지 여부를 반환한다.
+    private static boolean doesUserChooseToOpenCell(String userActionInput) {
+        return userActionInput.equals("1");
+    }
+
+    // 사용자가 깃발을 꽂기를 선택했는지 여부를 반환한다.
+    private static boolean doesUserChooseToPlantFlag(String userActionInput) {
+        return userActionInput.equals("2");
+    }
+
+    // 입력받은 좌표 중 row 값을 인덱스 값으로 변환한다.
+    private static int getSelectedRowIndex(String cellInput) {
+        char cellInputRow = cellInput.charAt(1);
+        return convertRowFrom(cellInputRow);
+    }
+
+    // 입력받은 좌표 중 col 값을 인덱스 값으로 변환한다.
+    private static int getSelectedColIndex(String cellInput) {
+        char cellInputCol = cellInput.charAt(0);
+        return convertColFrom(cellInputCol);
+    }
+
+    // action을 입력받는다.
+    private static String getUserActionInputFromUser(Scanner scanner) {
+        System.out.println("선택한 셀에 대한 행위를 선택하세요. (1: 오픈, 2: 깃발 꽂기)");
+        return scanner.nextLine();
+    }
+
+    // 좌표를 입력받는다.
+    private static String getCellInputFromUser(Scanner scanner) {
+        System.out.println("선택할 좌표를 입력하세요. (예: a1)");
+        return scanner.nextLine();
+    }
+
+    // 게임 패배 여부를 반환한다.
+    private static boolean doesUserLoseTheGame() {
+        return gameStatus == -1;
+    }
+
+    // 게임 승리 여부를 반환한다.
+    private static boolean doesUserWinTheGame() {
+        return gameStatus == 1;
+    }
+
     // 모든 칸이 open 된 경우 승리 처리한다.
     private static void checkIfGameIsOver() {
         boolean isAllOpened = isAllCellOpened();
         if (isAllOpened) {
-            gameStatus = 1;
+            changeGameStatusToWin();
         }
+    }
+
+    // 게임 상태를 승리로 변경한다.
+    private static void changeGameStatusToWin() {
+        gameStatus = 1;
     }
 
     // 보드 판 전체를 돌면서 아직 open 되지 않은 칸이 있는지 확인한다.
@@ -132,29 +187,29 @@ public class MinesweeperGame {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
                 int count = 0;
-                if (!landMines[row][col]) { // 지뢰가 있는 칸이 아니라면
-                    if (row - 1 >= 0 && col - 1 >= 0 && landMines[row - 1][col - 1]) {
+                if (!isLandMineCell(row, col)) { // 지뢰가 있는 칸이 아니라면
+                    if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
                         count++;
                     }
-                    if (row - 1 >= 0 && landMines[row - 1][col]) {
+                    if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
                         count++;
                     }
-                    if (row - 1 >= 0 && col + 1 < 10 && landMines[row - 1][col + 1]) {
+                    if (row - 1 >= 0 && col + 1 < 10 && isLandMineCell(row - 1, col + 1)) {
                         count++;
                     }
-                    if (col - 1 >= 0 && landMines[row][col - 1]) {
+                    if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
                         count++;
                     }
-                    if (col + 1 < 10 && landMines[row][col + 1]) {
+                    if (col + 1 < 10 && isLandMineCell(row, col + 1)) {
                         count++;
                     }
-                    if (row + 1 < 8 && col - 1 >= 0 && landMines[row + 1][col - 1]) {
+                    if (row + 1 < 8 && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
                         count++;
                     }
-                    if (row + 1 < 8 && landMines[row + 1][col]) {
+                    if (row + 1 < 8 && isLandMineCell(row + 1, col)) {
                         count++;
                     }
-                    if (row + 1 < 8 && col + 1 < 10 && landMines[row + 1][col + 1]) {
+                    if (row + 1 < 8 && col + 1 < 10 && isLandMineCell(row + 1, col + 1)) {
                         count++;
                     }
                     landMineCounts[row][col] = count;
@@ -180,7 +235,7 @@ public class MinesweeperGame {
         if (!board[row][col].equals("□")) { // 이미 open되어 있는 칸인 경우
             return;
         }
-        if (landMines[row][col]) { // 지뢰가 있는 칸인 경우
+        if (isLandMineCell(row, col)) {
             return;
         }
         if (landMineCounts[row][col] != 0) { // 본인을 둘러싸고 있는 8개의 칸에 존재하는 지뢰 개수가 0이 아닌 경우
