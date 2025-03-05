@@ -203,38 +203,44 @@ public class MinesweeperGame {
 
         for (int row = 0; row < BOARD_ROW_SIZE; row++) {
             for (int col = 0; col < BOARD_COL_SIZE; col++) {
-                int count = 0;
-                if (!isLandMineCell(row, col)) { // 지뢰가 있는 칸이 아니라면
-                    if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
-                        count++;
-                    }
-                    if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
-                        count++;
-                    }
-                    if (row - 1 >= 0 && col + 1 < BOARD_COL_SIZE && isLandMineCell(row - 1, col + 1)) {
-                        count++;
-                    }
-                    if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
-                        count++;
-                    }
-                    if (col + 1 < BOARD_COL_SIZE && isLandMineCell(row, col + 1)) {
-                        count++;
-                    }
-                    if (row + 1 < BOARD_ROW_SIZE && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
-                        count++;
-                    }
-                    if (row + 1 < BOARD_ROW_SIZE && isLandMineCell(row + 1, col)) {
-                        count++;
-                    }
-                    if (row + 1 < BOARD_ROW_SIZE && col + 1 < BOARD_COL_SIZE && isLandMineCell(row + 1, col + 1)) {
-                        count++;
-                    }
-                    NEARBY_LAND_MINE_COUNTS[row][col] = count;
+                if (isLandMineCell(row, col)) { // 지뢰가 있는 칸이라면
+                    NEARBY_LAND_MINE_COUNTS[row][col] = 0;
                     continue;
-                } // 본인 기준으로 둘러싸고 있는 8개의 칸에 지뢰가 몇 개인지 세어서 landMineCounts 배열에 넣어준다.
-                NEARBY_LAND_MINE_COUNTS[row][col] = 0;
+                }
+                int count = countNearbyLandMines(row, col);
+                NEARBY_LAND_MINE_COUNTS[row][col] = count;
             }
         }
+    }
+
+    // 본인 기준으로 둘러싸고 있는 8개의 칸에 지뢰가 몇 개인지 센다.
+    private static int countNearbyLandMines(int row, int col) {
+        int count = 0;
+        if (row - 1 >= 0 && col - 1 >= 0 && isLandMineCell(row - 1, col - 1)) {
+            count++;
+        }
+        if (row - 1 >= 0 && isLandMineCell(row - 1, col)) {
+            count++;
+        }
+        if (row - 1 >= 0 && col + 1 < BOARD_COL_SIZE && isLandMineCell(row - 1, col + 1)) {
+            count++;
+        }
+        if (col - 1 >= 0 && isLandMineCell(row, col - 1)) {
+            count++;
+        }
+        if (col + 1 < BOARD_COL_SIZE && isLandMineCell(row, col + 1)) {
+            count++;
+        }
+        if (row + 1 < BOARD_ROW_SIZE && col - 1 >= 0 && isLandMineCell(row + 1, col - 1)) {
+            count++;
+        }
+        if (row + 1 < BOARD_ROW_SIZE && isLandMineCell(row + 1, col)) {
+            count++;
+        }
+        if (row + 1 < BOARD_ROW_SIZE && col + 1 < BOARD_COL_SIZE && isLandMineCell(row + 1, col + 1)) {
+            count++;
+        }
+        return count;
     }
 
     // 게임 시작 안내 문구를 출력한다.
