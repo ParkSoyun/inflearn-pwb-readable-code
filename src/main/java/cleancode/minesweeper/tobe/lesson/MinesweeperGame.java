@@ -25,20 +25,26 @@ public class MinesweeperGame {
         initializeGame();
 
         while (true) {
-            showBoard();
+            try {
+                showBoard();
 
-            if (doesUserWinTheGame()) {
-                System.out.println("지뢰를 모두 찾았습니다. GAME CLEAR!");
-                break;
-            }
-            if (doesUserLoseTheGame()) {
-                System.out.println("지뢰를 밟았습니다. GAME OVER!");
-                break;
-            }
+                if (doesUserWinTheGame()) {
+                    System.out.println("지뢰를 모두 찾았습니다. GAME CLEAR!");
+                    break;
+                }
+                if (doesUserLoseTheGame()) {
+                    System.out.println("지뢰를 밟았습니다. GAME OVER!");
+                    break;
+                }
 
-            String cellInput = getCellInputFromUser();
-            String userActionInput = getUserActionInputFromUser();
-            actOnCell(cellInput, userActionInput);
+                String cellInput = getCellInputFromUser();
+                String userActionInput = getUserActionInputFromUser();
+                actOnCell(cellInput, userActionInput);
+            } catch (AppException e) { // 의도한 예외
+                System.out.println(e.getMessage());
+            } catch (Exception e) { // 의도하지 않아서 개발자가 처리해야 하는 예외
+                System.out.println("프로그램에 문제가 생겼습니다.");
+            }
         }
     }
 
@@ -64,7 +70,7 @@ public class MinesweeperGame {
             checkIfGameIsOver();
             return;
         }
-        System.out.println("잘못된 번호를 선택하셨습니다.");
+        throw new AppException("잘못된 번호를 선택하셨습니다."); // userActionInput 값에 대한 예외 처리
     }
 
     // 게임 상태를 패배로 변경한다.
@@ -138,12 +144,17 @@ public class MinesweeperGame {
     private static boolean isAllCellOpened() {
         return Arrays.stream(BOARD) // Stream<String[]>
                 .flatMap(Arrays::stream) // Stream<String>
-                .noneMatch(cell -> cell.equals(CLOSED_CELL_SIGN));
+                .noneMatch(CLOSED_CELL_SIGN::equals); // cell은 null 가능성이 있는 검증되지 않은 값 => NPE가 발생할 가능성이 있다. => 상수인(null 가능성이 없는) CLOSED_CELL_SIGN에서 equals를 호출하여 cell 값과 비교하도록 수정하여 NPE가 발생할 가능성을 차단
     }
 
     // cellInputRow 값을 Board 배열의 인덱스 값으로 치환해 준다.
     private static int convertRowFrom(char cellInputRow) {
-        return Character.getNumericValue(cellInputRow) - 1;
+        int rowIndex = Character.getNumericValue(cellInputRow) - 1;
+        if (rowIndex >= BOARD_ROW_SIZE) {
+            throw new AppException("잘못된 입력입니다.");
+        } // row 값에 대한 예외 처리
+
+        return rowIndex;
     }
 
     // cellInputCol 값을 Board 배열의 인덱스 값으로 치환해 준다.
@@ -170,7 +181,7 @@ public class MinesweeperGame {
             case 'j':
                 return 9;
             default:
-                return -1;
+                throw new AppException("잘못된 입력입니다."); // col 값에 대한 예외 처리
         }
     }
 
