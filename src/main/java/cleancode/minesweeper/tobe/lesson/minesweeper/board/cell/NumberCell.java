@@ -22,10 +22,10 @@ public class NumberCell implements Cell {
 
     @Override
     public CellSnapshot getSnapshot() {
-        if(cellState.isOpened()) {
+        if (cellState.isOpened()) {
             return CellSnapshot.ofNumber(nearbyLandMineCount);
         }
-        if(cellState.isFlagged()){
+        if (cellState.isFlagged()) {
             return CellSnapshot.ofFlag();
         }
         return CellSnapshot.ofUnchecked();

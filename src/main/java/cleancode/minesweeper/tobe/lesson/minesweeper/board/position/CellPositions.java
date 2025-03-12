@@ -20,8 +20,8 @@ public class CellPositions {
     public static CellPositions from(Cell[][] board) {
         List<CellPosition> cellPositions = new ArrayList<>();
 
-        for(int row = 0; row < board.length; row++) {
-            for(int col = 0; col < board[0].length; col++) {
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[0].length; col++) {
                 CellPosition cellPosition = CellPosition.of(row, col);
                 cellPositions.add(cellPosition);
             }

@@ -6,12 +6,13 @@ import cleancode.minesweeper.tobe.lesson.minesweeper.board.cell.Cells;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.cell.EmptyCell;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.cell.LandMineCell;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.cell.NumberCell;
-import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.position.CellPosition;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.position.CellPositions;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.position.RelativePosition;
+import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.GameLevel;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 
 
 public class GameBoard {
@@ -144,15 +145,15 @@ public class GameBoard {
     }
 
     private void openSurroundedCells(CellPosition cellPosition) {
-        Stack<CellPosition> stack = new Stack<>();
-        stack.push(cellPosition);
+        Deque<CellPosition> deque = new ArrayDeque<>();
+        deque.push(cellPosition);
 
-        while(!stack.isEmpty()) {
-            openAndPushCellAt(stack);
+        while (!deque.isEmpty()) {
+            openAndPushCellAt(deque);
         }
     }
 
-    private void openAndPushCellAt(Stack<CellPosition> stack) {
+    private void openAndPushCellAt(Deque<CellPosition> stack) {
         CellPosition currentCellPosition = stack.pop();
 
         if (isOpenedCell(currentCellPosition)) {
@@ -168,8 +169,9 @@ public class GameBoard {
             return;
         }
 
-        List<CellPosition> surroundedPositions = calculateSurroundedPositions(currentCellPosition, getRowSize(), getColSize());
-        for(CellPosition surroundedPosition : surroundedPositions) {
+        List<CellPosition> surroundedPositions = calculateSurroundedPositions(currentCellPosition, getRowSize(),
+                getColSize());
+        for (CellPosition surroundedPosition : surroundedPositions) {
             stack.push(surroundedPosition);
         }
     }

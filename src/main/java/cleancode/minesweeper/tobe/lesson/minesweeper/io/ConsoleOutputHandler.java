@@ -1,11 +1,11 @@
 package cleancode.minesweeper.tobe.lesson.minesweeper.io;
 
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.GameBoard;
-import cleancode.minesweeper.tobe.lesson.minesweeper.exception.GameException;
 import cleancode.minesweeper.tobe.lesson.minesweeper.board.cell.CellSnapshot;
+import cleancode.minesweeper.tobe.lesson.minesweeper.board.position.CellPosition;
+import cleancode.minesweeper.tobe.lesson.minesweeper.exception.GameException;
 import cleancode.minesweeper.tobe.lesson.minesweeper.io.sign.CellSignFinder;
 import cleancode.minesweeper.tobe.lesson.minesweeper.io.sign.CellSignProvider;
-import cleancode.minesweeper.tobe.lesson.minesweeper.board.position.CellPosition;
 import java.util.List;
 import java.util.stream.IntStream;
 

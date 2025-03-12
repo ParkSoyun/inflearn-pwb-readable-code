@@ -5,7 +5,7 @@ import cleancode.minesweeper.tobe.lesson.minesweeper.io.InputHandler;
 import cleancode.minesweeper.tobe.lesson.minesweeper.io.OutputHandler;
 
 public class GameConfig {
-    
+
     private final GameLevel gameLevel;
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
