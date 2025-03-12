@@ -1,8 +1,8 @@
 package cleancode.studycafe.tobe.by_myself.io;
 
 import cleancode.studycafe.tobe.by_myself.model.StudyCafeLockerPass;
-import cleancode.studycafe.tobe.by_myself.model.StudyCafePass;
 import cleancode.studycafe.tobe.by_myself.model.StudyCafePassType;
+import cleancode.studycafe.tobe.by_myself.model.StudyCafeSeatPass;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,10 +11,10 @@ import java.util.List;
 
 public class StudyCafeFileHandler {
 
-    public List<StudyCafePass> readStudyCafePasses() {
+    public List<StudyCafeSeatPass> readSeatPasses() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/pass-list.csv"));
-            List<StudyCafePass> studyCafePasses = new ArrayList<>();
+            List<StudyCafeSeatPass> studyCafePasses = new ArrayList<>();
             for (String line : lines) {
                 String[] values = line.split(",");
                 StudyCafePassType studyCafePassType = StudyCafePassType.valueOf(values[0]);
@@ -22,7 +22,8 @@ public class StudyCafeFileHandler {
                 int price = Integer.parseInt(values[2]);
                 double discountRate = Double.parseDouble(values[3]);
 
-                StudyCafePass studyCafePass = StudyCafePass.of(studyCafePassType, duration, price, discountRate);
+                StudyCafeSeatPass studyCafePass = StudyCafeSeatPass.of(studyCafePassType, duration, price,
+                        discountRate);
                 studyCafePasses.add(studyCafePass);
             }
 
