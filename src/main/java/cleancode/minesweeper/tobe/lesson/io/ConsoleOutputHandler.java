@@ -31,7 +31,7 @@ public class ConsoleOutputHandler implements OutputHandler {
                 CellPosition cellPosition = CellPosition.of(row, col);
 
                 CellSnapshot snapshot = board.getSnapshot(cellPosition);
-//                String cellSign = cellSignFinder.findCellSignFrom(snapshot); // 구현체를 모두 가지고 있기 때문에 상태가 추가될 때마다 구현체를 만들고 상수에 그 구현체를 등록까지 해줘야 한다.
+//                String cellSign = cellSignFinder.findCellSignFrom(snapshot);
                 String cellSign = CellSignProvider.findCellSignFrom(snapshot);
 
                 System.out.print(cellSign + " ");
