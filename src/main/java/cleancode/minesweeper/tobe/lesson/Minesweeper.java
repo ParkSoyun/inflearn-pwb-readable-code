@@ -6,6 +6,7 @@ import cleancode.minesweeper.tobe.lesson.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.lesson.io.InputHandler;
 import cleancode.minesweeper.tobe.lesson.io.OutputHandler;
 import cleancode.minesweeper.tobe.lesson.position.CellPosition;
+import cleancode.minesweeper.tobe.lesson.user.UserAction;
 
 public class Minesweeper implements GameInitializable, GameRunnable {
 
@@ -43,7 +44,7 @@ public class Minesweeper implements GameInitializable, GameRunnable {
                 }
 
                 CellPosition cellInput = getCellInputFromUser();
-                String userActionInput = getUserActionInputFromUser();
+                UserAction userActionInput = getUserActionInputFromUser();
                 actOnCell(cellInput, userActionInput);
             } catch (GameException e) { // 의도한 예외
                 outputHandler.showExceptionMessage(e);
@@ -54,7 +55,7 @@ public class Minesweeper implements GameInitializable, GameRunnable {
     }
 
     // 사용자에게 입력받은 좌표에 입력받은 행위를 수행한다.
-    private void actOnCell(CellPosition cellPosition, String userActionInput) {
+    private void actOnCell(CellPosition cellPosition, UserAction userActionInput) {
         if (doesUserChooseToPlantFlag(userActionInput)) {
             gameBoard.flagAt(cellPosition);
             checkIfGameIsOver();
@@ -81,19 +82,19 @@ public class Minesweeper implements GameInitializable, GameRunnable {
     }
 
     // 사용자가 open하기를 선택했는지 여부를 반환한다.
-    private boolean doesUserChooseToOpenCell(String userActionInput) {
-        return userActionInput.equals("1");
+    private boolean doesUserChooseToOpenCell(UserAction userAction) {
+        return userAction == UserAction.OPEN;
     }
 
     // 사용자가 깃발을 꽂기를 선택했는지 여부를 반환한다.
-    private boolean doesUserChooseToPlantFlag(String userActionInput) {
-        return userActionInput.equals("2");
+    private boolean doesUserChooseToPlantFlag(UserAction userAction) {
+        return userAction == UserAction.FLAG;
     }
 
     // action을 입력받는다.
-    private String getUserActionInputFromUser() {
+    private UserAction getUserActionInputFromUser() {
         outputHandler.showCommentForUserAction();
-        return inputHandler.getUserInput();
+        return inputHandler.getUserActionFromUser();
     }
 
     // 좌표를 입력받는다.
