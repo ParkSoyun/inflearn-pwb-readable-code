@@ -1,0 +1,61 @@
+package cleancode.minesweeper.tobe.lesson.minesweeper.board;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.Advanced;
+import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.Beginner;
+import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.GameLevel;
+import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.Middle;
+import cleancode.minesweeper.tobe.lesson.minesweeper.gamelevel.VeryBeginner;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class GameBoardTest {
+
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("gameLevelProvider")
+    @DisplayName("각 게임 레벨에 맞는 사이즈의 게임 보드를 생성한다.")
+    void createGameBoardWithGameLevel(GameLevel gameLevel) {
+        // given
+        int expectedRowSize = gameLevel.getRowSize();
+        int expectedColSize = gameLevel.getColSize();
+
+        // when
+        GameBoard gameBoard = new GameBoard(gameLevel);
+
+        //then
+        assertThat(gameBoard.getRowSize()).isEqualTo(expectedRowSize);
+        assertThat(gameBoard.getColSize()).isEqualTo(expectedColSize);
+    }
+
+
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("gameLevelProvider")
+    @DisplayName("게임이 초기화된 직후의 게임 상태는 In Process이다.")
+    void isInitialGameStatusInProcess(GameLevel gameLevel) {
+        // given
+        GameBoard gameBoard = new GameBoard(gameLevel);
+        gameBoard.initializeGame();
+
+        // when
+        boolean isInProcessResult = gameBoard.isInProgress();
+
+        //then
+        assertThat(isInProcessResult).isTrue();
+    }
+
+    private static Stream<Arguments> gameLevelProvider() {
+        return Stream.of(
+            Arguments.of(Named.of("Very Beginner", new VeryBeginner())),
+            Arguments.of(Named.of("Beginner", new Beginner())),
+            Arguments.of(Named.of("Middle", new Middle())),
+            Arguments.of(Named.of("Advanced", new Advanced()))
+        );
+    }
+
+}
