@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class BoardIndexConverterTest {
 
-    @DisplayName("사용자가 입력한 좌표 값을 보드의 index 값으로 변경한다.")
+    @DisplayName("사용자가 범위 내의 좌표 값을 입력하면 입력한 좌표 값을 보드의 index 값으로 변경한다.")
     @Test
     void boardIndexConvertFromUserInput() {
         // given
