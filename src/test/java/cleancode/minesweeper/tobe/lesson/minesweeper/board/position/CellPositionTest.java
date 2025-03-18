@@ -28,26 +28,36 @@ class CellPositionTest {
         assertThat(calculatedPositionBy.getColIndex()).isEqualTo(expectedColIndex);
     }
 
-    @DisplayName("(0, 0)에 대해서 상대 위치(-1, -1)을 계산한 좌표는 이동이 불가능한 좌표다.")
-    @Test
-    void calculatePositionToOutOfRange() {
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("relativePositionOutOfRangeProvider")
+    @DisplayName("(0, 0)에 대해서 상대 위치(-1, -1), (-1, 0), (-1, 1), (0, -1), (1, -1)을 계산한 좌표는 이동이 불가능한 좌표다.")
+    void calculatePositionToOutOfRange2(RelativePosition relativePositionOutOfRange) {
         // given
         CellPosition cellPosition = CellPosition.of(0, 0);
-        RelativePosition relativePosition = RelativePosition.of(-1, -1);
 
         // when
 
         //then
-        assertThatThrownBy(() -> cellPosition.calculatePositionBy(relativePosition))
+        assertThatThrownBy(() -> cellPosition.calculatePositionBy(relativePositionOutOfRange))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("움직일 수 있는 좌표가 아닙니다.");
     }
-
+    
     private static Stream<Arguments> relativePositionInRangeProvider() {
         return Stream.of(
             Arguments.of(Named.of("상대 위치 : (0, 1)", RelativePosition.of(0, 1)), 0, 1),
             Arguments.of(Named.of("상대 위치 : (1, 0)", RelativePosition.of(1, 0)), 1, 0),
             Arguments.of(Named.of("상대 위치 : (1, 1)", RelativePosition.of(1, 1)), 1, 1)
+        );
+    }
+
+    private static Stream<Arguments> relativePositionOutOfRangeProvider() {
+        return Stream.of(
+            Arguments.of(Named.of("상대 위치 : (-1, -1)", RelativePosition.of(-1, -1))),
+            Arguments.of(Named.of("상대 위치 : (-1, 0)", RelativePosition.of(-1, 0))),
+            Arguments.of(Named.of("상대 위치 : (-1, 1)", RelativePosition.of(-1, 1))),
+            Arguments.of(Named.of("상대 위치 : (0, -1)", RelativePosition.of(0, -1))),
+            Arguments.of(Named.of("상대 위치 : (1, -1)", RelativePosition.of(1, -1)))
         );
     }
 
