@@ -2,26 +2,30 @@ package cleancode.minesweeper.tobe.lesson.minesweeper.board.position;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class CellPositionTest {
 
-    @DisplayName("(2, 3)에 대해서 상대 위치(-1, 1)을 계산한 결과는 (1, 4)이다.")
-    @Test
-    void calculatePositionBy() {
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("relativePositionInRangeProvider")
+    @DisplayName("(0, 0)에 대해서 상대 위치(0, 1), (1, 0), (1, 1)을 계산한 좌표는 (0, 1), (1, 0), (1, 1)이다.")
+    void calculatePositionToInRange(RelativePosition relativePositionInRange, int expectedRowIndex, int expectedColIndex) {
         // given
-        CellPosition cellPosition = CellPosition.of(2, 3);
-        RelativePosition relativePosition = RelativePosition.of(-1, 1);
+        CellPosition cellPosition = CellPosition.of(0, 0);
 
         // when
-        CellPosition calculatedPositionBy = cellPosition.calculatePositionBy(relativePosition);
+        CellPosition calculatedPositionBy = cellPosition.calculatePositionBy(relativePositionInRange);
 
         //then
-        assertThat(calculatedPositionBy.getRowIndex()).isEqualTo(1);
-        assertThat(calculatedPositionBy.getColIndex()).isEqualTo(4);
+        assertThat(calculatedPositionBy.getRowIndex()).isEqualTo(expectedRowIndex);
+        assertThat(calculatedPositionBy.getColIndex()).isEqualTo(expectedColIndex);
     }
 
     @DisplayName("(0, 0)에 대해서 상대 위치(-1, -1)을 계산한 좌표는 이동이 불가능한 좌표다.")
@@ -37,6 +41,14 @@ class CellPositionTest {
         assertThatThrownBy(() -> cellPosition.calculatePositionBy(relativePosition))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("움직일 수 있는 좌표가 아닙니다.");
+    }
+
+    private static Stream<Arguments> relativePositionInRangeProvider() {
+        return Stream.of(
+            Arguments.of(Named.of("상대 위치 : (0, 1)", RelativePosition.of(0, 1)), 0, 1),
+            Arguments.of(Named.of("상대 위치 : (1, 0)", RelativePosition.of(1, 0)), 1, 0),
+            Arguments.of(Named.of("상대 위치 : (1, 1)", RelativePosition.of(1, 1)), 1, 1)
+        );
     }
 
 }
