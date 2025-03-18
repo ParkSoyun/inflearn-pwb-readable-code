@@ -33,6 +33,22 @@ class GameBoardTest {
         assertThat(gameBoard.getColSize()).isEqualTo(expectedColSize);
     }
 
+
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("gameLevelProvider")
+    @DisplayName("게임이 초기화된 직후의 게임 상태는 In Process이다.")
+    void isInitialGameStatusInProcess(GameLevel gameLevel) {
+        // given
+        GameBoard gameBoard = new GameBoard(gameLevel);
+        gameBoard.initializeGame();
+
+        // when
+        boolean isInProcessResult = gameBoard.isInProgress();
+
+        //then
+        assertThat(isInProcessResult).isTrue();
+    }
+
     private static Stream<Arguments> gameLevelProvider() {
         return Stream.of(
             Arguments.of(Named.of("Very Beginner", new VeryBeginner())),
