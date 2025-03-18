@@ -33,4 +33,32 @@ class CellsTest {
         assertThat(isAllCheckedResult).isTrue();
     }
 
+
+    @DisplayName("지뢰 셀이 flag 되지 않았다면 모든 셀이 체크된 것이 아니다.")
+    @Test
+    void isAllCheckedExceptLandMineCell() {
+        // given
+        List<Cell> cellList = List.of(
+            new LandMineCell(),
+            new EmptyCell(),
+            new EmptyCell()
+        );
+
+        Cells cells = Cells.of(cellList);
+
+        for(Cell cell : cellList) {
+            if(cell.isLandMine()) {
+                continue;
+            }
+
+            cell.open();
+        }
+
+        // when
+        boolean isAllCheckResult = cells.isAllChecked();
+
+        //then
+        assertThat(isAllCheckResult).isFalse();
+    }
+
 }
