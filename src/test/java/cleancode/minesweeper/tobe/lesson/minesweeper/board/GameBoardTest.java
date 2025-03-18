@@ -19,7 +19,7 @@ class GameBoardTest {
 
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource("gameLevelProvider")
-    @DisplayName("각 게임 레벨에 맞는 게임 보드가 생성된다.")
+    @DisplayName("각 게임 레벨에 맞는 사이즈의 게임 보드를 생성한다.")
     void createGameBoardWithGameLevel(GameLevel gameLevel) {
         // given
         int expectedRowSize = gameLevel.getRowSize();
